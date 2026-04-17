@@ -4,25 +4,19 @@ import pytest
 from app.main import get_human_age
 
 
-def test_should_calculate_zero_year_correctly() -> None:
-    assert get_human_age(0, 0) == [0, 0]
-    assert get_human_age(14, 14) == [0, 0]
-
-
-def test_should_calculate_one_year_correctly() -> None:
-    assert get_human_age(15, 15) == [1, 1]
-    assert get_human_age(23, 23) == [1, 1]
-
-
-def test_should_calculate_two_years_correctly() -> None:
-    assert get_human_age(24, 24) == [2, 2]
-    assert get_human_age(27, 27) == [2, 2]
-    assert get_human_age(28, 28) == [3, 2]
-
-
-def test_should_calculate_three_and_more_years_correctly() -> None:
-    assert get_human_age(28, 28) == [3, 2]
-    assert get_human_age(100, 100) == [21, 17]
+@pytest.mark.parametrize("cat_age, dog_age, expected", [
+    pytest.param(0, 0, [0, 0], id="zero ages"),
+    pytest.param(14, 14, [0, 0], id="last year before first human year"),
+    pytest.param(15, 15, [1, 1], id="first human year"),
+    pytest.param(23, 23, [1, 1], id="last year of first human year"),
+    pytest.param(24, 24, [2, 2], id="second human year"),
+    pytest.param(27, 27, [2, 2], id="last year of second human year"),
+    pytest.param(28, 28, [3, 2], id="cat advances dog does not"),
+    pytest.param(29, 29, [3, 3], id="dog boundary advances at 29"),
+    pytest.param(100, 100, [21, 17], id="old age"),
+])
+def test_get_human_age(cat_age: int, dog_age: int, expected: list) -> None:
+    assert get_human_age(cat_age, dog_age) == expected
 
 
 def test_should_validate_input_correctly() -> None:
